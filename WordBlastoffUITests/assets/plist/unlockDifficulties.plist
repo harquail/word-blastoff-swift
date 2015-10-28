@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>greatThreshold</key>
+	<integer>600</integer>
+	<key>easyGate</key>
+	<real>3900</real>
+	<key>mediumGate</key>
+	<integer>6000</integer>
+	<key>hardGate</key>
+	<real>8000</real>
+	<key>impossibleGate</key>
+	<real>10000</real>
+</dict>
+</plist>
