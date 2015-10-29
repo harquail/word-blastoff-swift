@@ -27,8 +27,10 @@ class GameScene: SKScene {
 
         blackHole = SKSpriteNode(texture: masterAtlas.textureNamed("hole0.png"))
         blackHole.position = frameMiddle
-//        blackHole.physicsBody = SKPhysicsBody(circleOfRadius: blackHole.size.width/2)
+        blackHole.physicsBody = SKPhysicsBody(circleOfRadius: blackHole.size.width/2)
         blackHole.physicsBody?.affectedByGravity = false
+//        blackHole.physicsBody?.collisionBitMask = 0
+        blackHole.physicsBody?.dynamic = true
         
         blackHole.physicsBody?.categoryBitMask = blackHoleBitMask
         blackHole.physicsBody?.collisionBitMask = lettersBitMask
@@ -36,8 +38,8 @@ class GameScene: SKScene {
         let vortex = SKFieldNode.vortexField()
         vortex.enabled = true
         vortex.position = frameMiddle
-        vortex.strength = 500
-        
+        vortex.strength = 50
+
         let bigFrame = CGRectApplyAffineTransform(self.frame, CGAffineTransformScale(CGAffineTransformIdentity, 20, 20))
         vortex.region = SKRegion(size:  bigFrame.size)
         
@@ -49,6 +51,9 @@ class GameScene: SKScene {
         
         gravity.categoryBitMask = lettersBitMask
         vortex.categoryBitMask = lettersBitMask
+        
+        blackHole.physicsBody?.fieldBitMask = 0
+        
 //        blackHole.physicsBody?.categoryBitMask =
         
         self.addChild(myLabel)
@@ -67,7 +72,7 @@ class GameScene: SKScene {
         for touch in touches {
             let location = touch.locationInNode(self)
             
-            let sprite = SKSpriteNode(imageNamed:"Spaceship")
+//            let sprite = SKSpriteNode(imageNamed:"Spaceship")
         
             
 //            print(masterAtlas.textureNamed("_1@2x.png"))
@@ -75,13 +80,11 @@ class GameScene: SKScene {
 //            print(masterAtlas.textureNamed("_1"))
 
                 let newSprite = SKSpriteNode(texture: masterAtlas.textureNamed("_1@2x.png"))
+            newSprite.position = location
+
+            self.addChild(newSprite)
 
             
-            if let bhPhysics = blackHole.physicsBody, let nsPhysics = newSprite.physicsBody{
-            
-            let joint = SKPhysicsJointPin.jointWithBodyA(bhPhysics, bodyB: nsPhysics, anchor: blackHole.position)
-            
-            }
 //            newSprite.physicsBody =
             
 //            newSprite.position = CGPointMake(100, 100)
@@ -107,24 +110,39 @@ class GameScene: SKScene {
 //            .Create (node.Texture, node.Size);
             newSprite.physicsBody?.affectedByGravity = true
             newSprite.physicsBody?.allowsRotation = true
-            newSprite.physicsBody?.mass = 30;
+            newSprite.physicsBody?.mass = 30
+            newSprite.physicsBody?.friction = 0.3
             
             self.scene?.physicsWorld.gravity = CGVectorMake(0, 0)
 
 
             newSprite.physicsBody?.categoryBitMask = lettersBitMask
             newSprite.physicsBody?.collisionBitMask = blackHoleBitMask | lettersBitMask
+            newSprite.physicsBody?.contactTestBitMask = blackHoleBitMask
+            
+            
+            if let bhPhysics = blackHole.physicsBody, let nsPhysics = newSprite.physicsBody{
+                
+                let joint = SKPhysicsJointLimit.jointWithBodyA(bhPhysics, bodyB: nsPhysics, anchorA: blackHole.position, anchorB: newSprite.position)
+                
+                print("blackhole pos \(blackHole.position)")
+                print("newSprite pos \(newSprite.position)")
+                
+                
+                self.physicsWorld.addJoint(joint)
+                
+            }
+            
+            
             
 //            newSprite.xScale = 0.5
 //            newSprite.yScale = 0.5
-            newSprite.position = location
             print(location)
             
-            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
+//            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
             
-            sprite.runAction(SKAction.repeatActionForever(action))
+//            sprite.runAction(SKAction.repeatActionForever(action))
             
-            self.addChild(newSprite)
         }
     }
    
